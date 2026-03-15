@@ -8,14 +8,22 @@
     "dev": "bun --watch index.ts"
   },
   "devDependencies": {
-    "@types/bun": "latest"
+    "@types/bun": "latest",
+    "@types/cors": "^2.8.19",
+    "drizzle-kit": "^0.31.9",
+    "postgres": "^3.4.8"
   },
   "peerDependencies": {
     "typescript": "^5"
   },
   "dependencies": {
     "@code-judge/shared": "workspace:*",
+    "@types/cookie-parser": "^1.4.10",
     "@types/express": "^5.0.6",
-    "express": "^5.2.1"
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.6",
+    "drizzle-orm": "^0.45.1",
+    "express": "^5.2.1",
+    "jose": "^6.2.1"
   }
 }
