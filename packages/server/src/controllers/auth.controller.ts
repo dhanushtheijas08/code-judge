@@ -15,15 +15,17 @@ import {
   verifyToken,
 } from "@/services/token.service";
 import { asyncErrorHandler } from "@/utils/asyncErrorHandler";
-import { loginSchema, registerSchema } from "@code-judge/shared/authSchema";
+import type {
+  LoginSchema,
+  RegisterSchema,
+} from "@code-judge/shared/authSchema";
 import type { Request, Response } from "express";
 import { CustomError } from "@/utils/CustomError";
 
 export const loginUser = asyncErrorHandler(
-  async (req: Request, res: Response) => {
-    const body = loginSchema.parse(req.body);
-
-    const user = await verifyUserCredentials(body.email, body.password);
+  async (req: Request<object, object, LoginSchema>, res: Response) => {
+    const { email, password } = req.body;
+    const user = await verifyUserCredentials(email, password);
 
     const session = await createSession({
       userId: user.id,
@@ -46,13 +48,12 @@ export const loginUser = asyncErrorHandler(
 );
 
 export const registerUser = asyncErrorHandler(
-  async (req: Request, res: Response) => {
-    const body = registerSchema.parse(req.body);
-
+  async (req: Request<object, object, RegisterSchema>, res: Response) => {
+    const { email, username, password } = req.body;
     const user = await createUser({
-      email: body.email,
-      username: body.username,
-      rawPassword: body.password,
+      email,
+      username,
+      rawPassword: password,
     });
 
     const session = await createSession({

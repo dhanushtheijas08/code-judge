@@ -1,1 +1,1 @@
-export { ZodError } from "zod";
+export { ZodError, ZodType } from "zod";

@@ -1,22 +1,21 @@
-import express from "express";
-import cors from "cors";
-import authRoutes from "@/routes/auth.route";
 import errorHandler from "@/middleware/errorHandler";
+import authRoutes from "@/routes/auth.route";
 import cookieParser from "cookie-parser";
+import cors from "cors";
+import express from "express";
 
 const app = express();
 
 app.set("trust proxy", true);
 app.use(
   cors({
-    origin: Bun.env.CLIENT_URL || "http://localhost:3000",
+    origin: Bun.env.CLIENT_URL,
     credentials: true,
   }),
 );
 app.use(express.json());
-
 app.use(cookieParser());
-app.get("/health", (req, res) => {
+app.get("/health", (_req, res) => {
   return res.status(200).json("healthy");
 });
 
