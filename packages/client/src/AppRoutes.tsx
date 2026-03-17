@@ -1,18 +1,30 @@
 import { BrowserRouter, Route, Routes } from "react-router";
-import AuthLayout from "./auth/AuthLayout";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { Toaster } from "@/components/ui/sonner";
+import AuthLayout from "./features/auth/components/AuthLayout";
+import { TooltipProvider } from "./components/ui/tooltip";
+import { ProblemsPage } from "./features/problems/ProblemsPage";
+const queryClient = new QueryClient();
 
 const AppRoutes = () => {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route index element={<></>} />
+    <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
+        <BrowserRouter>
+          <Routes>
+            <Route index element={<></>} />
 
-        <Route element={<AuthLayout />}>
-          <Route path="login" />
-          <Route path="register" />
-        </Route>
-      </Routes>
-    </BrowserRouter>
+            <Route element={<AuthLayout />}>
+              <Route path="login" />
+              <Route path="register" />
+            </Route>
+
+            <Route path="problems" element={<ProblemsPage />} />
+          </Routes>
+        </BrowserRouter>
+        <Toaster richColors />
+      </TooltipProvider>
+    </QueryClientProvider>
   );
 };
 

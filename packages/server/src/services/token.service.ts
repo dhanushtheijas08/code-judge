@@ -39,6 +39,8 @@ export const generateTokenPair = async (payload: AccessTokenPayload) => {
   return { accessToken, refreshToken };
 };
 
-export const verifyToken = async (token: string) => {
-  return await jwtVerify(token, getSecret(), { algorithms: ["HS256"] });
+export const verifyToken = async <CustomPayload>(token: string) => {
+  return await jwtVerify<CustomPayload>(token, getSecret(), {
+    algorithms: ["HS256"],
+  });
 };

@@ -10,15 +10,20 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { loginSchema, type LoginSchema } from "@code-judge/shared/authSchema";
+import { useAuth } from "../utils/useAuth";
 
 export const LoginForm = () => {
+  const { loginMutation } = useAuth();
+
   const form = useForm<LoginSchema>({
     resolver: zodResolver(loginSchema),
   });
 
-  function onSubmit(data: LoginSchema) {
-    console.log(data);
-  }
+  const onSubmit = (data: LoginSchema) => {
+    loginMutation.mutate(data, {
+      onSuccess: () => form.reset(),
+    });
+  };
 
   return (
     <form id="login-form" onSubmit={form.handleSubmit(onSubmit)}>
@@ -36,6 +41,7 @@ export const LoginForm = () => {
                 aria-invalid={fieldState.invalid}
                 placeholder="you@example.com"
                 autoComplete="email"
+                disabled={loginMutation.isPending}
               />
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
             </Field>
@@ -54,6 +60,7 @@ export const LoginForm = () => {
                 aria-invalid={fieldState.invalid}
                 placeholder="••••••••"
                 autoComplete="current-password"
+                disabled={loginMutation.isPending}
               />
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
             </Field>
@@ -61,8 +68,13 @@ export const LoginForm = () => {
         />
       </FieldGroup>
       <Field className="mt-5.5 w-full">
-        <Button type="submit" form="login-form" className="h-8.5">
-          Login
+        <Button
+          type="submit"
+          form="login-form"
+          className="h-8.5"
+          disabled={loginMutation.isPending}
+        >
+          {loginMutation.isPending ? "Logging in..." : "Login"}
         </Button>
       </Field>
     </form>

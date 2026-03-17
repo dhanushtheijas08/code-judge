@@ -1,4 +1,4 @@
-import { AuthCard } from "./components/AuthCard";
+import { AuthCard } from "./AuthCard";
 
 const AuthLayout = () => {
   return (

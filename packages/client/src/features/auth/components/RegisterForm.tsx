@@ -13,15 +13,19 @@ import {
   registerSchema,
   type RegisterSchema,
 } from "@code-judge/shared/authSchema";
+import { useAuth } from "../utils/useAuth";
 
 export const RegisterForm = () => {
+  const { registerMutation } = useAuth();
   const form = useForm<RegisterSchema>({
     resolver: zodResolver(registerSchema),
   });
 
-  function onSubmit(data: RegisterSchema) {
-    console.log(data);
-  }
+  const onSubmit = (data: RegisterSchema) => {
+    registerMutation.mutate(data, {
+      onSuccess: () => form.reset(),
+    });
+  };
 
   return (
     <form id="register-form" onSubmit={form.handleSubmit(onSubmit)}>
@@ -39,6 +43,7 @@ export const RegisterForm = () => {
                 aria-invalid={fieldState.invalid}
                 placeholder="johndoe"
                 autoComplete="username"
+                disabled={registerMutation.isPending}
               />
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
             </Field>
@@ -57,6 +62,7 @@ export const RegisterForm = () => {
                 aria-invalid={fieldState.invalid}
                 placeholder="you@example.com"
                 autoComplete="email"
+                disabled={registerMutation.isPending}
               />
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
             </Field>
@@ -75,6 +81,7 @@ export const RegisterForm = () => {
                 aria-invalid={fieldState.invalid}
                 placeholder="••••••••"
                 autoComplete="new-password"
+                disabled={registerMutation.isPending}
               />
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
             </Field>
@@ -82,8 +89,13 @@ export const RegisterForm = () => {
         />
       </FieldGroup>
       <Field className="mt-5.5 w-full">
-        <Button type="submit" form="register-form" className="h-8.5">
-          Register
+        <Button
+          type="submit"
+          form="register-form"
+          className="h-8.5"
+          disabled={registerMutation.isPending}
+        >
+          {registerMutation.isPending ? "Registering..." : "Register"}
         </Button>
       </Field>
     </form>
