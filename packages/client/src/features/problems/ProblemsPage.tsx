@@ -1,169 +1,92 @@
-import { useMemo, useState } from "react";
+import { PROBLEMS_PER_PAGE } from "@/utils/conts";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Navbar } from "./components/Navbar";
-import { ProblemFilters, type FilterState } from "./components/ProblemFilters";
-import { ProblemsTable } from "./components/ProblemsTable";
-import { MOCK_PROBLEMS } from "./mock-problems";
-import type { Difficulty, Status } from "./mock-problems";
-
-const PROBLEMS_PER_PAGE = 20;
-
-const DIFFICULTY_ORDER: Record<Difficulty, number> = {
-  Easy: 0,
-  Medium: 1,
-  Hard: 2,
-};
-
-const DEFAULT_FILTERS: FilterState = {
-  search: "",
-  difficulty: "All",
-  tag: "",
-  status: "All",
-  sort: "default",
-};
-
-const StatPill = ({
-  color,
-  label,
-  count,
-}: {
-  color: string;
-  label: string;
-  count: number;
-}) => (
-  <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-card border border-border">
-    <span className={`w-2 h-2 rounded-full shrink-0 ${color}`} />
-    <span className="text-xs text-muted-foreground">
-      <span className="font-semibold text-foreground">{count}</span> {label}
-    </span>
-  </div>
-);
+import { ProblemFilters } from "./components/ProblemFilters";
+import { problemColumns } from "./components/ProblemsTable/problem-columns";
+import { ProblemsTable } from "./components/ProblemsTable/ProblemsTable";
+import type { ProblemType } from "./types";
+import { useProblems } from "./utils/useProblems";
+import { useSearchParams } from "react-router";
 
 export const ProblemsPage = () => {
-  const [filters, setFilters] = useState<FilterState>(DEFAULT_FILTERS);
-  const [page, setPage] = useState(1);
+  const [searchParams, setSearchParams] = useSearchParams();
 
-  const filtered = useMemo(() => {
-    let result = [...MOCK_PROBLEMS];
+  const {
+    fetchAllProblems: { data: problemsData, isPending, isError },
+  } = useProblems();
 
-    if (filters.search.trim()) {
-      const q = filters.search.toLowerCase();
-      result = result.filter((p) => p.title.toLowerCase().includes(q));
-    }
-    if (filters.difficulty !== "All") {
-      result = result.filter((p) => p.difficulty === (filters.difficulty as Difficulty));
-    }
-    if (filters.tag) {
-      result = result.filter((p) => p.tags.includes(filters.tag));
-    }
-    if (filters.status !== "All") {
-      result = result.filter((p) => p.status === (filters.status as Status));
-    }
-
-    switch (filters.sort) {
-      case "acceptance-asc":
-        result.sort((a, b) => a.acceptance - b.acceptance);
-        break;
-      case "acceptance-desc":
-        result.sort((a, b) => b.acceptance - a.acceptance);
-        break;
-      case "difficulty":
-        result.sort(
-          (a, b) => DIFFICULTY_ORDER[a.difficulty] - DIFFICULTY_ORDER[b.difficulty],
-        );
-        break;
-      case "title-asc":
-        result.sort((a, b) => a.title.localeCompare(b.title));
-        break;
-      default:
-        result.sort((a, b) => a.id - b.id);
-    }
-
-    return result;
-  }, [filters]);
-
-  // Reset to page 1 when filters change
-  const handleFiltersChange = (newFilters: FilterState) => {
-    setFilters(newFilters);
-    setPage(1);
-  };
-
-  const totalPages = Math.max(1, Math.ceil(filtered.length / PROBLEMS_PER_PAGE));
-  const safePage = Math.min(page, totalPages);
-  const paginated = filtered.slice(
-    (safePage - 1) * PROBLEMS_PER_PAGE,
-    safePage * PROBLEMS_PER_PAGE,
+  const total = problemsData?.total ?? 0;
+  const problems = problemsData?.problems ?? [];
+  const totalPages = Math.max(1, Math.ceil(total / PROBLEMS_PER_PAGE));
+  const parsedPage = Number(searchParams.get("page") ?? 1);
+  const safePage = Math.min(
+    Math.max(Number.isFinite(parsedPage) ? parsedPage : 1, 1),
+    totalPages,
   );
-
-  const easyCount = MOCK_PROBLEMS.filter((p) => p.difficulty === "Easy").length;
-  const mediumCount = MOCK_PROBLEMS.filter((p) => p.difficulty === "Medium").length;
-  const hardCount = MOCK_PROBLEMS.filter((p) => p.difficulty === "Hard").length;
-  const solvedCount = MOCK_PROBLEMS.filter((p) => p.status === "solved").length;
-
-  const solvedPercent = Math.round((solvedCount / MOCK_PROBLEMS.length) * 100);
 
   return (
     <div className="min-h-screen">
       <Navbar />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Page Header */}
         <div className="mb-6">
-          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-5">
-            <div>
-              <h1 className="text-xl font-bold text-foreground tracking-tight">
-                Problems
-              </h1>
-              <p className="mt-1 text-sm text-muted-foreground">
-                Practice coding problems to sharpen your skills
-              </p>
-            </div>
-
-            {/* Stats */}
-            <div className="flex flex-wrap items-center gap-2">
-              <StatPill color="bg-emerald-500" label="Easy" count={easyCount} />
-              <StatPill color="bg-amber-500" label="Medium" count={mediumCount} />
-              <StatPill color="bg-rose-500" label="Hard" count={hardCount} />
-
-              <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-card border border-border">
-                <div className="w-16 h-1.5 bg-muted rounded-full overflow-hidden">
-                  <div
-                    className="h-full bg-primary rounded-full transition-all"
-                    style={{ width: `${solvedPercent}%` }}
-                  />
-                </div>
-                <span className="text-xs text-muted-foreground whitespace-nowrap">
-                  <span className="font-semibold text-foreground">{solvedCount}</span>
-                  /{MOCK_PROBLEMS.length}
-                </span>
-              </div>
-            </div>
+          <div>
+            <h1 className="text-xl font-bold text-foreground tracking-tight">
+              Problems
+            </h1>
+            <p className="mt-1 text-sm text-muted-foreground">
+              Practice coding problems to sharpen your skills
+            </p>
           </div>
         </div>
 
         {/* Filters */}
-        <ProblemFilters filters={filters} onFiltersChange={handleFiltersChange} />
+        <ProblemFilters
+          tags={problems?.flatMap((p: ProblemType) => p.tags) || []}
+        />
 
         {/* Result summary */}
         <div className="flex items-center justify-between mb-3">
           <p className="text-xs text-muted-foreground">
-            {filtered.length === 0
+            {total === 0
               ? "No results"
               : `${(safePage - 1) * PROBLEMS_PER_PAGE + 1}–${Math.min(
                   safePage * PROBLEMS_PER_PAGE,
-                  filtered.length,
-                )} of ${filtered.length} problems`}
+                  total,
+                )} of ${total} problems`}
           </p>
         </div>
 
         {/* Table */}
-        <ProblemsTable problems={paginated} />
+        {isPending ? (
+          <div className="bg-card border border-border rounded-xl overflow-hidden py-24 text-center">
+            <p className="text-sm text-muted-foreground">Loading problems...</p>
+          </div>
+        ) : (
+          <>
+            {isError && (
+              <p className="text-xs text-destructive mb-3">
+                Could not load from API. Showing fallback data.
+              </p>
+            )}
+            <ProblemsTable
+              columns={problemColumns}
+              data={problems as ProblemType[]}
+            />
+          </>
+        )}
 
         {/* Pagination */}
         {totalPages > 1 && (
           <div className="flex items-center justify-center gap-1.5 mt-6">
             <button
-              onClick={() => setPage((p) => Math.max(1, p - 1))}
+              onClick={() =>
+                setSearchParams((p) => {
+                  const next = new URLSearchParams(p);
+                  next.set("page", String(Math.max(safePage - 1, 1)));
+                  return next;
+                })
+              }
               disabled={safePage === 1}
               className="flex items-center gap-1 px-3 py-1.5 text-sm text-muted-foreground bg-card border border-border rounded-lg hover:bg-accent hover:text-foreground disabled:opacity-35 disabled:cursor-not-allowed transition-colors"
             >
@@ -175,7 +98,13 @@ export const ProblemsPage = () => {
               {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
                 <button
                   key={p}
-                  onClick={() => setPage(p)}
+                  onClick={() =>
+                    setSearchParams((prev) => {
+                      const next = new URLSearchParams(prev);
+                      next.set("page", String(p));
+                      return next;
+                    })
+                  }
                   className={`w-8 h-8 text-xs font-semibold rounded-lg transition-colors ${
                     p === safePage
                       ? "bg-primary text-primary-foreground"
@@ -188,7 +117,13 @@ export const ProblemsPage = () => {
             </div>
 
             <button
-              onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+              onClick={() =>
+                setSearchParams((p) => {
+                  const next = new URLSearchParams(p);
+                  next.set("page", String(Math.min(safePage + 1, totalPages)));
+                  return next;
+                })
+              }
               disabled={safePage === totalPages}
               className="flex items-center gap-1 px-3 py-1.5 text-sm text-muted-foreground bg-card border border-border rounded-lg hover:bg-accent hover:text-foreground disabled:opacity-35 disabled:cursor-not-allowed transition-colors"
             >

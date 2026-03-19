@@ -13,10 +13,20 @@ export const validator =
       const { schema, target } = options;
 
       if (target === "body") req.body = schema.parse(req.body);
-      if (target === "query")
-        req.query = schema.parse(req.query) as Request["query"];
-      if (target === "params")
-        req.params = schema.parse(req.params) as Request["params"];
+      if (target === "query") {
+        const validated = schema.parse(req.query) as Record<string, unknown>;
+        Object.keys(req.query).forEach(
+          (k) => delete (req.query as Record<string, unknown>)[k],
+        );
+        Object.assign(req.query, validated);
+      }
+      if (target === "params") {
+        const validated = schema.parse(req.params) as Record<string, string>;
+        Object.keys(req.params).forEach(
+          (k) => delete (req.params as Record<string, string>)[k],
+        );
+        Object.assign(req.params, validated);
+      }
 
       next();
     } catch (error) {

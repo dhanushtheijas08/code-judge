@@ -12,6 +12,10 @@
     "./authSchema": {
       "import": "./src/schema/authSchema.ts",
       "types": "./src/schema/authSchema.ts"
+    },
+    "./problemsSchema": {
+      "import": "./src/schema/problemsSchema.ts",
+      "types": "./src/schema/problemsSchema.ts"
     }
   },
   "scripts": {
