@@ -43,6 +43,10 @@ export const EditorPanelSkeleton = () => (
       <Skeleton className="h-4 w-[68%]" />
       <Skeleton className="h-4 w-[81%]" />
       <Skeleton className="h-4 w-[58%]" />
+      <Skeleton className="h-4 w-[86%]" />
+      <Skeleton className="h-4 w-[68%]" />
+      <Skeleton className="h-4 w-[81%]" />
+      <Skeleton className="h-4 w-[68%]" />
     </div>
   </div>
 );

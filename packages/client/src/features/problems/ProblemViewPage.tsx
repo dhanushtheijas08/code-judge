@@ -12,6 +12,12 @@ import { CodeEditor } from "./components/ProblemView/CodeEditor";
 import { TestCases } from "./components/ProblemView/TestCases";
 import { getSingleProblemApi } from "./utils/problemsApi";
 
+import {
+  ResizableHandle,
+  ResizablePanel,
+  ResizablePanelGroup,
+} from "@/components/ui/resizable";
+
 export const ProblemViewPage = () => {
   const { slug } = useParams<{ slug: string }>();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -51,28 +57,42 @@ export const ProblemViewPage = () => {
     <div className="flex flex-col h-screen bg-background text-foreground font-sans overflow-hidden">
       <ProblemNavbar />
 
-      <div className="flex-1 flex flex-col lg:flex-row gap-2 p-2 overflow-hidden bg-background">
+      <ResizablePanelGroup
+        orientation="horizontal"
+        className="flex-1 flex flex-col lg:flex-row gap-2 p-2 overflow-hidden bg-background"
+      >
         <ProblemDescription
           problem={apiProblem}
           isLoading={shouldShowLoading}
           isError={isError}
         />
+        <ResizableHandle withHandle />
 
-        <div className="w-full lg:w-1/2 flex flex-col gap-2 relative">
-          <CodeEditor
-            code={code}
-            onCodeChange={setCode}
-            preferredLang={preferredLang}
-            onLanguageChange={handleLanguageChange}
-            isLoading={shouldShowLoading}
-          />
+        <ResizablePanel defaultSize="50%">
+          <ResizablePanelGroup
+            className="flex flex-col gap-2 relative w-full"
+            orientation="vertical"
+          >
+            <ResizablePanel defaultSize="60%" className="h-full">
+              <CodeEditor
+                code={code}
+                onCodeChange={setCode}
+                preferredLang={preferredLang}
+                onLanguageChange={handleLanguageChange}
+                isLoading={shouldShowLoading}
+              />
+            </ResizablePanel>
+            <ResizableHandle withHandle />
 
-          <TestCases
-            testCases={problemTestCases}
-            isLoading={shouldShowLoading}
-          />
-        </div>
-      </div>
+            <ResizablePanel defaultSize="40%">
+              <TestCases
+                testCases={problemTestCases}
+                isLoading={shouldShowLoading}
+              />
+            </ResizablePanel>
+          </ResizablePanelGroup>
+        </ResizablePanel>
+      </ResizablePanelGroup>
     </div>
   );
 };

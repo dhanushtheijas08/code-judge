@@ -135,11 +135,6 @@
   }
 }
 
-::webkit-scrollbar {
-  scrollbar-width: thin;
-}
-
-.katex-display,
-.katex-mathml {
-  display: inline;
+::-webkit-scrollbar {
+  scrollbar-width: none;
 }

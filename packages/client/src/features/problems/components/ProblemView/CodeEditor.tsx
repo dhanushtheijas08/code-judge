@@ -8,6 +8,10 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area";
 import type { SupportedLanguageSchema } from "@code-judge/shared/problemsSchema";
 import { javascript } from "@codemirror/lang-javascript";
+import { cpp } from "@codemirror/lang-cpp";
+import { java } from "@codemirror/lang-java";
+import { python } from "@codemirror/lang-python";
+
 import { vscodeDark } from "@uiw/codemirror-theme-vscode";
 import CodeMirror from "@uiw/react-codemirror";
 import { Maximize2, Settings } from "lucide-react";
@@ -34,13 +38,15 @@ export const CodeEditor = ({
   }
 
   return (
-    <div className="flex-1 flex flex-col bg-card rounded-lg border border-border overflow-hidden min-h-[300px]">
+    <div className="flex-1 flex flex-col bg-card rounded-lg border border-border overflow-hidden min-h-[300px] h-full">
       <div className="flex items-center justify-between px-3 py-2 bg-muted/50 border-b border-border">
         <div className="flex items-center space-x-2">
           <Select
             value={preferredLang}
+            onValueChange={(value) => {
+              if (value) onLanguageChange(value);
+            }}
             items={SUPPORTED_LANGUAGES}
-            onValueChange={onLanguageChange}
           >
             <SelectTrigger
               size="sm"
@@ -78,13 +84,19 @@ export const CodeEditor = ({
           value={code}
           height="100%"
           theme={vscodeDark}
-          extensions={[javascript()]}
+          extensions={[javascript(), cpp(), java(), python()]}
           onChange={(value: string) => onCodeChange(value)}
           basicSetup={{
             lineNumbers: true,
             highlightActiveLineGutter: true,
             highlightActiveLine: true,
             foldGutter: true,
+            allowMultipleSelections: true,
+            bracketMatching: true,
+            closeBrackets: true,
+            closeBracketsKeymap: true,
+            autocompletion: true,
+            syntaxHighlighting: true,
           }}
         />
       </ScrollArea>

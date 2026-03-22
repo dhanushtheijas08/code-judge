@@ -9,6 +9,7 @@ import type { ProblemType } from "../../types";
 import { DifficultyBadge } from "../ProblemsTable/DifficultyBadge";
 import { TagsList } from "../ProblemsTable/TagsList";
 import { LeftPanelSkeleton } from "./Skeletons";
+import { ResizablePanel } from "@/components/ui/resizable";
 
 interface ProblemDescriptionProps {
   problem: ProblemType | undefined;
@@ -27,7 +28,10 @@ export const ProblemDescription = ({
   const problemQuestionMarkdown = problem?.question ?? "";
 
   return (
-    <div className="w-full lg:w-1/2 flex flex-col bg-card rounded-lg border border-border overflow-hidden min-h-0">
+    <ResizablePanel
+      defaultSize="50%"
+      className="w-full flex flex-col bg-card rounded-lg border border-border overflow-hidden min-h-0"
+    >
       <Tabs defaultValue="description" className="flex flex-1 flex-col gap-0">
         <TabsList
           variant="line"
@@ -125,6 +129,6 @@ export const ProblemDescription = ({
           </ScrollArea>
         </TabsContent>
       </Tabs>
-    </div>
+    </ResizablePanel>
   );
 };
