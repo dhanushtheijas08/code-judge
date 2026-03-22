@@ -67,6 +67,7 @@ export const problemsTable = pgTable(
       .primaryKey()
       .default(sql`gen_random_uuid()`),
 
+    slug: text("slug").notNull().unique(),
     question: text("question").notNull(),
     name: text("name").notNull(),
     testCase: jsonb("test_case")
@@ -85,7 +86,10 @@ export const problemsTable = pgTable(
       .defaultNow()
       .$onUpdate(() => new Date().toISOString()),
   },
-  (t) => [index("problem_difficulty_idx").on(t.difficulty)],
+  (t) => [
+    index("problem_difficulty_idx").on(t.difficulty),
+    index("problem_slug_idx").on(t.slug),
+  ],
 );
 export const problemsRelation = relations(problemsTable, ({ many }) => ({
   problemsToTags: many(problemsToTags),

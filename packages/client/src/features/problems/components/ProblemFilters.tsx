@@ -26,6 +26,7 @@ import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router";
 import type { DifficultyLevel, ProblemStatus, Tags } from "../types";
 import { TagsDropdown } from "./TagsDropdown";
+import { Button } from "@/components/ui/button";
 
 export interface FilterState {
   search: string;
@@ -133,7 +134,7 @@ export const ProblemFilters = ({ tags }: { tags: Tags[] }) => {
   };
 
   return (
-    <div className="flex flex-wrap items-end gap-3 py-4">
+    <div className="flex flex-wrap items-end gap-3 py-4 w-full">
       <div>
         <FilterLabel>Search</FilterLabel>
         <InputGroup className="min-w-52 max-w-72 h-9">
@@ -245,13 +246,14 @@ export const ProblemFilters = ({ tags }: { tags: Tags[] }) => {
       )}
 
       {hasActiveFilters && (
-        <button
+        <Button
           onClick={resetFilters}
-          className="flex items-center gap-1.5 h-9 px-3 text-xs font-medium text-muted-foreground hover:text-foreground border border-border/60 rounded-lg hover:bg-accent/40 transition-colors self-end"
+          variant="outline"
+          className="self-end ml-auto"
         >
           <RotateCcw className="size-3" />
           Reset
-        </button>
+        </Button>
       )}
     </div>
   );

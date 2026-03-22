@@ -20,6 +20,7 @@ import {
 interface ProblemsTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  onRowClick?: (row: TData) => void;
 }
 
 const EmptyState = () => (
@@ -39,6 +40,7 @@ const EmptyState = () => (
 export function ProblemsTable<TData, TValue>({
   columns,
   data,
+  onRowClick,
 }: ProblemsTableProps<TData, TValue>) {
   const table = useReactTable({
     data,
@@ -91,7 +93,14 @@ export function ProblemsTable<TData, TValue>({
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
-                  className={`group hover:bg-accent/30 transition-colors duration-100 cursor-pointer ${
+                  role={onRowClick ? "button" : undefined}
+                  tabIndex={onRowClick ? 0 : undefined}
+                  onClick={
+                    onRowClick ? () => onRowClick(row.original) : undefined
+                  }
+                  className={`group hover:bg-accent/30 transition-colors duration-100 ${
+                    onRowClick ? "cursor-pointer" : ""
+                  } ${
                     index !== table.getRowModel().rows.length - 1
                       ? "border-b border-border/60"
                       : ""

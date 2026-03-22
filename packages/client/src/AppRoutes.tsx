@@ -4,6 +4,7 @@ import { Toaster } from "@/components/ui/sonner";
 import AuthLayout from "./features/auth/components/AuthLayout";
 import { TooltipProvider } from "./components/ui/tooltip";
 import { ProblemsPage } from "./features/problems/ProblemsPage";
+import { ProblemViewPage } from "./features/problems/ProblemViewPage";
 const queryClient = new QueryClient();
 
 const AppRoutes = () => {
@@ -20,6 +21,7 @@ const AppRoutes = () => {
             </Route>
 
             <Route path="problems" element={<ProblemsPage />} />
+            <Route path="problems/:slug" element={<ProblemViewPage />} />
           </Routes>
         </BrowserRouter>
         <Toaster richColors />

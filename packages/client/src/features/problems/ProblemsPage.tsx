@@ -1,16 +1,18 @@
 import { PROBLEMS_PER_PAGE } from "@/utils/conts";
+import { getPreferredLanguage } from "@/utils/user-preferences";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useNavigate, useSearchParams } from "react-router";
 import { Navbar } from "./components/Navbar";
 import { ProblemFilters } from "./components/ProblemFilters";
 import { problemColumns } from "./components/ProblemsTable/problem-columns";
 import { ProblemsTable } from "./components/ProblemsTable/ProblemsTable";
 import type { ProblemType } from "./types";
 import { useProblems } from "./utils/useProblems";
-import { useSearchParams } from "react-router";
 
 export const ProblemsPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
-
+  const navigate = useNavigate();
+  const preferredlang = getPreferredLanguage();
   const {
     fetchAllProblems: { data: problemsData, isPending, isError },
   } = useProblems();
@@ -72,6 +74,9 @@ export const ProblemsPage = () => {
             <ProblemsTable
               columns={problemColumns}
               data={problems as ProblemType[]}
+              onRowClick={(row) => {
+                navigate(`/problems/${row.slug}?lang=${preferredlang}`);
+              }}
             />
           </>
         )}

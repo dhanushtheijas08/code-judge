@@ -1,4 +1,6 @@
-import { countProblems, findAllProblems } from "@/queries";
+import { countProblems, findAllProblems, findProblemBySlug } from "@/queries";
+import { CustomError } from "@/utils/CustomError";
+import type { SupportedLanguageSchema } from "@code-judge/shared/problemsSchema";
 
 export type GetAllProblemsOptions = {
   tags?: string[];
@@ -51,4 +53,16 @@ export const getAllProblems = async (
     problems: Array.from(problemMap.values()),
     total,
   };
+};
+
+export const getProblemBySlug = async (
+  slug: string,
+  lang: SupportedLanguageSchema,
+) => {
+  const problem = await findProblemBySlug(slug, lang);
+
+  if (!problem) {
+    throw new CustomError("Problem not found", 404);
+  }
+  return problem;
 };

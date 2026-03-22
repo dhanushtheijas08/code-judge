@@ -2,6 +2,7 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 @import "@fontsource-variable/figtree";
+@plugin "@tailwindcss/typography";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -132,4 +133,13 @@
   html {
     @apply font-sans;
   }
+}
+
+::webkit-scrollbar {
+  scrollbar-width: thin;
+}
+
+.katex-display,
+.katex-mathml {
+  display: inline;
 }

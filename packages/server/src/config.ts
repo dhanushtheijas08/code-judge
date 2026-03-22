@@ -8,9 +8,7 @@ const pg = new SQL({
   database: "postgres",
   password: "test",
   username: "test",
-  onconnect: () => {
-    console.log("Connected to PostgreSQL");
-  },
+  onconnect: () => {},
   onclose(err: any) {
     console.error("PostgreSQL connection closed:", {
       message: err?.message,
