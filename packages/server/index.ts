@@ -6,6 +6,7 @@ import errorHandler from "@/middleware/errorHandler";
 import authRoutes from "@/routes/auth.route";
 import userRoutes from "@/routes/user.route";
 import problemRoutes from "@/routes/problem.route";
+import submissionRoutes from "@/routes/submission.route";
 const app = express();
 
 app.set("trust proxy", true);
@@ -24,6 +25,6 @@ app.get("/health", (_req, res) => {
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/user", userRoutes);
 app.use("/api/v1/problem", problemRoutes);
-
+app.use("/api/v1/submission", submissionRoutes);
 app.use(errorHandler);
 app.listen(Bun.env.PORT, () => console.log(`Running in port ${Bun.env.PORT}`));

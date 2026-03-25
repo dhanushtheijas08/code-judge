@@ -4,6 +4,16 @@
   "type": "module",
   "version": "0.0.1",
   "private": true,
+  "exports": {
+    "./schema": {
+      "import": "./src/schema.ts",
+      "types": "./src/schema.ts"
+    },
+    "./config": {
+      "import": "./src/config.ts",
+      "types": "./src/config.ts"
+    }
+  },
   "scripts": {
     "dev": "bun --watch index.ts"
   },
@@ -20,6 +30,7 @@
     "@code-judge/shared": "workspace:*",
     "@types/cookie-parser": "^1.4.10",
     "@types/express": "^5.0.6",
+    "bullmq": "^5.71.0",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.6",
     "drizzle-orm": "^0.45.1",

@@ -11,6 +11,7 @@ export const loginApi = async ({ email, password }: LoginSchema) => {
       headers: {
         "Content-Type": "application/json",
       },
+      credentials: "include",
       body: JSON.stringify({ email, password }),
     });
     const data = await res.json();
@@ -36,6 +37,7 @@ export const registerApi = async ({
       headers: {
         "Content-Type": "application/json",
       },
+      credentials: "include",
       body: JSON.stringify({ username, email, password }),
     });
     const data = await res.json();

@@ -61,11 +61,17 @@ export const ProblemViewPage = () => {
         orientation="horizontal"
         className="flex-1 flex flex-col lg:flex-row gap-2 p-2 overflow-hidden bg-background"
       >
-        <ProblemDescription
-          problem={apiProblem}
-          isLoading={shouldShowLoading}
-          isError={isError}
-        />
+        <ResizablePanel
+          defaultSize="50%"
+          minSize="30%"
+          className="overflow-hidden!"
+        >
+          <ProblemDescription
+            problem={apiProblem}
+            isLoading={shouldShowLoading}
+            isError={isError}
+          />
+        </ResizablePanel>
         <ResizableHandle withHandle />
 
         <ResizablePanel defaultSize="50%">
@@ -73,18 +79,22 @@ export const ProblemViewPage = () => {
             className="flex flex-col gap-2 relative w-full"
             orientation="vertical"
           >
-            <ResizablePanel defaultSize="60%" className="h-full">
+            <ResizablePanel
+              defaultSize="55%"
+              className="h-full overflow-hidden!"
+            >
               <CodeEditor
                 code={code}
                 onCodeChange={setCode}
                 preferredLang={preferredLang}
                 onLanguageChange={handleLanguageChange}
                 isLoading={shouldShowLoading}
+                problemId={apiProblem?.id}
               />
             </ResizablePanel>
             <ResizableHandle withHandle />
 
-            <ResizablePanel defaultSize="40%">
+            <ResizablePanel defaultSize="45%" className="overflow-hidden!">
               <TestCases
                 testCases={problemTestCases}
                 isLoading={shouldShowLoading}

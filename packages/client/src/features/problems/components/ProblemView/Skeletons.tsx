@@ -22,6 +22,18 @@ export const LeftPanelSkeleton = () => (
       <Skeleton className="h-4 w-[90%]" />
       <Skeleton className="h-4 w-[84%]" />
     </div>
+    <div className="flex flex-wrap items-center gap-2.5">
+      <Skeleton className="h-7 w-20 rounded-none" />
+      <Skeleton className="h-7 w-24" />
+      <Skeleton className="h-7 w-28" />
+    </div>
+    <div className="space-y-2">
+      <Skeleton className="h-4 w-full" />
+      <Skeleton className="h-4 w-[94%]" />
+      <Skeleton className="h-4 w-[88%]" />
+      <Skeleton className="h-4 w-[76%]" />
+    </div>
+    <Skeleton className="h-4 w-[84%]" />
   </div>
 );
 

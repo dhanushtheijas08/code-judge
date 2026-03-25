@@ -1,9 +1,6 @@
-import { Button } from "@/components/ui/button";
 import {
   ChevronLeft,
   List,
-  Play,
-  Send,
   Settings,
 } from "lucide-react";
 
@@ -27,16 +24,6 @@ export const ProblemNavbar = () => {
         </div>
       </div>
 
-      <div className="flex items-center space-x-3 absolute left-1/2 -translate-x-1/2">
-        <Button type="button" variant="secondary" className="px-4 h-8">
-          <Play />
-          Run
-        </Button>
-        <Button type="button" variant="default" className="px-4">
-          <Send />
-          Submit
-        </Button>
-      </div>
       <div className="flex items-center space-x-4">
         <button className="p-2 text-muted-foreground hover:text-foreground hover:bg-accent rounded-md transition-colors">
           <Settings className="w-5 h-5" />

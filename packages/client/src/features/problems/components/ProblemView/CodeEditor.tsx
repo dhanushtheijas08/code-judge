@@ -5,6 +5,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import type { SupportedLanguageSchema } from "@code-judge/shared/problemsSchema";
 import { javascript } from "@codemirror/lang-javascript";
@@ -14,9 +15,12 @@ import { python } from "@codemirror/lang-python";
 
 import { vscodeDark } from "@uiw/codemirror-theme-vscode";
 import CodeMirror from "@uiw/react-codemirror";
-import { Maximize2, Settings } from "lucide-react";
+import { Maximize2, Settings, Play, Send } from "lucide-react";
 import { EditorPanelSkeleton } from "./Skeletons";
 import { SUPPORTED_LANGUAGES } from "./constants";
+import { useMutation } from "@tanstack/react-query";
+import { submitCodeApi, runCodeApi } from "../../utils/submissionApi";
+import { toast } from "sonner";
 
 interface CodeEditorProps {
   code: string;
@@ -24,6 +28,7 @@ interface CodeEditorProps {
   preferredLang: SupportedLanguageSchema;
   onLanguageChange: (lang: string) => void;
   isLoading: boolean;
+  problemId?: string;
 }
 
 export const CodeEditor = ({
@@ -32,7 +37,72 @@ export const CodeEditor = ({
   preferredLang,
   onLanguageChange,
   isLoading,
+  problemId,
 }: CodeEditorProps) => {
+  const submitMutation = useMutation({
+    mutationFn: submitCodeApi,
+    onSuccess: (data) => {
+      toast.success("Code submitted successfully!", {
+        description: `Submission ID: ${data.submissionId}`,
+      });
+    },
+    onError: (error: Error) => {
+      toast.error("Submission failed", {
+        description: error.message || "Please try again",
+      });
+    },
+  });
+
+  const runMutation = useMutation({
+    mutationFn: runCodeApi,
+    onSuccess: (data) => {
+      if (data.status === "accepted") {
+        toast.success("All test cases passed!", {
+          description: `${data.testCasesPassed}/${data.totalTestCases} test cases passed`,
+        });
+      } else {
+        toast.error("Test cases failed", {
+          description: `${data.testCasesPassed}/${data.totalTestCases} test cases passed`,
+        });
+      }
+    },
+    onError: (error: Error) => {
+      toast.error("Run failed", {
+        description: error.message || "Please try again",
+      });
+    },
+  });
+
+  const handleRunCode = () => {
+    if (!problemId || !code.trim()) {
+      toast.error("Cannot run code", {
+        description: "Please write some code first",
+      });
+      return;
+    }
+
+    runMutation.mutate({
+      problemId,
+      code,
+      language: preferredLang,
+    });
+  };
+
+  const handleSubmitCode = () => {
+    if (!problemId || !code.trim()) {
+      toast.error("Cannot submit code", {
+        description: "Please write some code first",
+      });
+      return;
+    }
+
+    submitMutation.mutate({
+      problemId,
+      code,
+      language: preferredLang,
+    });
+  };
+
   if (isLoading) {
     return <EditorPanelSkeleton />;
   }
@@ -63,15 +133,38 @@ export const CodeEditor = ({
             </SelectContent>
           </Select>
         </div>
-        <div className="flex items-center space-x-2 text-muted-foreground">
+        <div className="flex items-center space-x-2">
+          <Button
+            type="button"
+            variant="secondary"
+            size="sm"
+            className="h-7 px-3"
+            onClick={handleRunCode}
+            disabled={runMutation.isPending || submitMutation.isPending}
+          >
+            <Play className="w-3.5 h-3.5" />
+            {runMutation.isPending ? "Running..." : "Run"}
+          </Button>
+          <Button
+            type="button"
+            variant="default"
+            size="sm"
+            className="h-7 px-3"
+            onClick={handleSubmitCode}
+            disabled={runMutation.isPending || submitMutation.isPending}
+          >
+            <Send className="w-3.5 h-3.5" />
+            {submitMutation.isPending ? "Submitting..." : "Submit"}
+          </Button>
+          <div className="h-4 w-px bg-border mx-1" />
           <button
-            className="p-1.5 hover:text-foreground hover:bg-accent rounded-md transition-colors"
+            className="p-1.5 hover:text-foreground hover:bg-accent rounded-md transition-colors text-muted-foreground"
             title="Editor Settings"
           >
             <Settings className="w-4 h-4" />
           </button>
           <button
-            className="p-1.5 hover:text-foreground hover:bg-accent rounded-md transition-colors"
+            className="p-1.5 hover:text-foreground hover:bg-accent rounded-md transition-colors text-muted-foreground"
             title="Full Screen"
           >
             <Maximize2 className="w-4 h-4" />

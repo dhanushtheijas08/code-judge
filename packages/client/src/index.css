@@ -136,5 +136,5 @@
 }
 
 ::-webkit-scrollbar {
-  scrollbar-width: none;
+  scrollbar-width: thin;
 }

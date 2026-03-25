@@ -2,6 +2,7 @@ import { relations, sql } from "drizzle-orm";
 import {
   decimal,
   index,
+  integer,
   jsonb,
   pgEnum,
   pgTable,
@@ -155,3 +156,68 @@ export const starterCodeTable = pgTable(
   },
   (t) => [unique().on(t.language, t.problemId)],
 );
+
+export const submissionStatusEnum = pgEnum("submission_status", [
+  "pending",
+  "accepted",
+  "wrong_answer",
+  "time_limit_exceeded",
+  "memory_limit_exceeded",
+  "compilation_error",
+  "runtime_error",
+]);
+
+export const submissionTable = pgTable(
+  "submission",
+  {
+    id: uuid("id")
+      .notNull()
+      .primaryKey()
+      .default(sql`gen_random_uuid()`),
+
+    status: submissionStatusEnum("status").notNull().default("pending"),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => userTable.id, { onDelete: "cascade" }),
+    problemId: uuid("problem_id")
+      .notNull()
+      .references(() => problemsTable.id, { onDelete: "cascade" }),
+
+    code: text("code").notNull(),
+    language: languages("language").notNull(),
+    testCasesPassed: integer("test_cases_passed").notNull().default(0),
+    totalTestCases: integer("total_test_cases").notNull().default(0),
+    executionTimeMs: integer("execution_time_ms"),
+    memoryKb: integer("memory_kb"),
+    errorMessage: text("error_message"),
+    failedTestCase: jsonb("failed_test_case").$type<{
+      input: unknown;
+      expectedOutput: unknown;
+      actualOutput: unknown;
+    }>(),
+    submittedAt: timestamp("submitted_at", { mode: "string" })
+      .defaultNow()
+      .notNull(),
+    updatedAt: timestamp("updated_at", { mode: "string" })
+      .notNull()
+      .defaultNow()
+      .$onUpdate(() => new Date().toISOString()),
+  },
+  (t) => [
+    index("submission_user_idx").on(t.userId),
+    index("submission_problem_idx").on(t.problemId),
+    index("submission_user_problem_idx").on(t.userId, t.problemId),
+    index("submission_status_idx").on(t.status),
+  ],
+);
+
+export const submissionRelations = relations(submissionTable, ({ one }) => ({
+  user: one(userTable, {
+    fields: [submissionTable.userId],
+    references: [userTable.id],
+  }),
+  problem: one(problemsTable, {
+    fields: [submissionTable.problemId],
+    references: [problemsTable.id],
+  }),
+}));

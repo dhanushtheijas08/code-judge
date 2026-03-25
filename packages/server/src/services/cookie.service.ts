@@ -21,6 +21,7 @@ export const setAuthCookies = (
       httpOnly: true,
       sameSite: "lax",
       secure: isProduction,
+      path: "/",
     });
 
   if (type === "refresh-token" || type === "both")

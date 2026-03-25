@@ -41,10 +41,10 @@ export const TestCases = ({ testCases, isLoading }: TestCasesProps) => {
             Test Result
           </TabsTrigger>
         </TabsList>
-        <TabsContent value="test-case">
-          <ScrollArea className="flex-1 p-5 pt-3.5">
+        <TabsContent value="test-case" className="p-0">
+          <ScrollArea className="h-[250px] overflow-y-auto p-5 pt-2.5">
             {testCases.length > 0 ? (
-              <Tabs className="max-h-[250px]">
+              <Tabs>
                 <TabsList className="mb-5 space-x-2.5 bg-transparent">
                   {testCases.map((_: unknown, idx: number) => (
                     <TabsTrigger
@@ -90,7 +90,7 @@ export const TestCases = ({ testCases, isLoading }: TestCasesProps) => {
                                 key={`${item.label}-${itemIdx}`}
                                 className="space-y-1.5"
                               >
-                                <pre className="p-3 bg-muted/80 text-secondary-foreground hover:bg-accent hover:text-accent-foreground text-sm  font-mono overflow-x-auto border border-border whitespace-pre-wrap wrap-break-word">
+                                <pre className="p-3 bg-muted/80 text-secondary-foreground text-sm  font-mono overflow-x-auto border border-border whitespace-pre-wrap wrap-break-word">
                                   {formatValue(item.value)}
                                 </pre>
                               </div>
