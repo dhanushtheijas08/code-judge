@@ -4,7 +4,7 @@ export const id = z.uuid();
 export const slugSchema = z.object({
   slug: z.string().min(1, { message: "Slug must be >= 1" }),
 });
-export const supportedLanguageSchema = z.enum(["js", "c", "cpp", "py", "java"]);
+export const supportedLanguageSchema = z.enum(["js", "ts", "c", "cpp", "py"]);
 export const supportedLanguageQuerySchema = z.object({
   lang: supportedLanguageSchema.default("c"),
 });

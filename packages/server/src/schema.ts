@@ -138,7 +138,7 @@ export const problemsToTagsRelations = relations(problemsToTags, ({ one }) => ({
   }),
 }));
 
-export const languages = pgEnum("languages", ["js", "c", "cpp", "py", "java"]);
+export const languages = pgEnum("languages", ["js", "ts", "c", "cpp", "py"]);
 
 export const starterCodeTable = pgTable(
   "starter_code",

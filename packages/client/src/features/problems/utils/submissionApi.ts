@@ -1,4 +1,5 @@
 import { SUBMISSION_API_URL } from "@/utils/conts";
+import { fetchWithAuthRetry } from "@/utils/fetchWithAuthRetry";
 import type {
   SubmitCodeInput,
   RunCodeInput,
@@ -9,12 +10,11 @@ export const submitCodeApi = async (
   input: SubmitCodeInput,
 ): Promise<{ submissionId: string }> => {
   try {
-    const res = await fetch(SUBMISSION_API_URL, {
+    const res = await fetchWithAuthRetry(SUBMISSION_API_URL, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      credentials: "include",
       body: JSON.stringify(input),
     });
 
@@ -35,12 +35,11 @@ export const runCodeApi = async (
   input: RunCodeInput,
 ): Promise<SubmissionResponse> => {
   try {
-    const res = await fetch(`${SUBMISSION_API_URL}/run`, {
+    const res = await fetchWithAuthRetry(`${SUBMISSION_API_URL}/run`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      credentials: "include",
       body: JSON.stringify(input),
     });
 

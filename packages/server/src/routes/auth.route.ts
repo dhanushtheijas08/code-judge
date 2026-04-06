@@ -1,4 +1,5 @@
 import {
+  generateNewAccessToken,
   loginUser,
   logoutUser,
   registerUser,
@@ -20,5 +21,6 @@ router.post(
   registerUser,
 );
 router.post("/logout", logoutUser);
+router.post("/refresh-token", generateNewAccessToken);
 
 export default router;

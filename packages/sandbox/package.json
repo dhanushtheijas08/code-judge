@@ -7,14 +7,16 @@
     "dev": "bun --watch index.ts"
   },
   "devDependencies": {
+    "@code-judge/server": "workspace:*",
     "@types/bun": "latest",
-    "@code-judge/server": "workspace:*"
+    "@types/dockerode": "^4.0.1"
   },
   "peerDependencies": {
     "typescript": "^5"
   },
   "dependencies": {
     "bullmq": "^5.71.0",
-    "dockerode": "^4.0.10"
+    "dockerode": "^4.0.10",
+    "drizzle-orm": "^0.45.1"
   }
 }

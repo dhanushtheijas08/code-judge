@@ -2,9 +2,9 @@ import type { SupportedLanguageSchema } from "@code-judge/shared/problemsSchema"
 
 export const LANGUAGE_LABELS: Record<SupportedLanguageSchema, string> = {
   js: "JavaScript",
+  ts: "TypeScript",
   py: "Python",
   cpp: "C++",
-  java: "Java",
   c: "C",
 };
 const PREFERRED_LANGUAGE_KEY = "code-judge:preferred-language";

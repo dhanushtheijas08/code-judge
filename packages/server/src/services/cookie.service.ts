@@ -6,7 +6,7 @@ type AuthTokens = {
 
 const ACCESS_TOKEN_TTL_MS = 15 * 60 * 1000;
 const REFRESH_TOKEN_TTL_MS = 30 * 24 * 60 * 60 * 1000;
-const REFRESH_TOKEN_PATHS = "/api/v1/auth";
+const REFRESH_TOKEN_PATHS = "/api/v1/auth/refresh-token";
 
 export const setAuthCookies = (
   res: Response,

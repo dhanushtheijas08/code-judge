@@ -1,8 +1,9 @@
-import { BrowserRouter, Route, Routes } from "react-router";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/sonner";
-import AuthLayout from "./features/auth/components/AuthLayout";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { BrowserRouter, Route, Routes } from "react-router";
 import { TooltipProvider } from "./components/ui/tooltip";
+import AuthLayout from "./features/auth/components/AuthLayout";
+import { LandingPage } from "./features/landing-page/Main";
 import { ProblemsPage } from "./features/problems/ProblemsPage";
 import { ProblemViewPage } from "./features/problems/ProblemViewPage";
 const queryClient = new QueryClient();
@@ -13,7 +14,7 @@ const AppRoutes = () => {
       <TooltipProvider>
         <BrowserRouter>
           <Routes>
-            <Route index element={<></>} />
+            <Route index element={<LandingPage />} />
 
             <Route element={<AuthLayout />}>
               <Route path="login" />
